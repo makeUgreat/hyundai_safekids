@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">safe_kids</string>
+    <string name="cabin_monitor_channel_name">차량 탑승 감시</string>
+    <string name="cabin_monitor_notification_title">뒷좌석 탑승 상태를 감시하고 있습니다</string>
 </resources>

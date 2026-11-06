@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity created")
 
-        startService(Intent(this, CabinMonitorService::class.java))
+        startForegroundService(Intent(this, CabinMonitorService::class.java))
     }
 
     private companion object {
