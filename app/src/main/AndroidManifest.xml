@@ -6,6 +6,9 @@
         android:name="android.hardware.type.automotive"
         android:required="true" />
 
+    <uses-permission android:name="pleos.car.permission.CAR_DOORS" />
+    <uses-permission android:name="pleos.car.permission.CAR_SEATS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
