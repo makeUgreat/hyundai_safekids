@@ -1,8 +1,6 @@
 package com.pony.safe_kids
 
 import ai.pleos.playground.vehicle.Vehicle
-import ai.pleos.playground.vehicle.api.model.area.DoorArea
-import ai.pleos.playground.vehicle.api.model.area.SeatArea
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         vehicle = Vehicle(applicationContext)
         vehicle.initialize()
-        logSignalCapabilities()
+        checkSignalCapabilities()
     }
 
     override fun onDestroy() {
@@ -25,33 +23,22 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun logSignalCapabilities() {
+    private fun checkSignalCapabilities() {
         vehicle.getDoor().checkDoorPositionCapabilities(
-            onComplete = { config, areas ->
-                val bounds = areas.map { (area, range) -> "${area.label()}=${range.minValue}..${range.maxValue}" }
-                Log.d(TAG, "DoorPosition access=${config.accessType} areas=$bounds")
-            },
+            onComplete = { _, _ -> Log.d(TAG, "DoorPosition capability ok") },
             onFailed = { e -> Log.e(TAG, "DoorPosition capability failed", e) },
         )
 
         vehicle.getSeat().checkSeatOccupancyCapabilities(
-            onComplete = { config, areas ->
-                Log.d(TAG, "SeatOccupancy access=${config.accessType} areas=${areas.map { it.label() }}")
-            },
+            onComplete = { _, _ -> Log.d(TAG, "SeatOccupancy capability ok") },
             onFailed = { e -> Log.e(TAG, "SeatOccupancy capability failed", e) },
         )
 
         vehicle.getSeat().checkSeatBeltBuckledCapabilities(
-            onComplete = { config, areas ->
-                Log.d(TAG, "SeatBeltBuckled access=${config.accessType} areas=${areas.map { it.label() }}")
-            },
+            onComplete = { _, _ -> Log.d(TAG, "SeatBeltBuckled capability ok") },
             onFailed = { e -> Log.e(TAG, "SeatBeltBuckled capability failed", e) },
         )
     }
-
-    private fun DoorArea.label() = values.joinToString("+")
-
-    private fun SeatArea.label() = values.joinToString("+")
 
     private companion object {
         const val TAG = "SafeKids"
