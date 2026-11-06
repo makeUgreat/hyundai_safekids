@@ -10,3 +10,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# R8 packageScope moves Kotlin multifile parts out of their package (IllegalAccessError at startup)
+-keepnames class kotlin.**Kt__*
