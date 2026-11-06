@@ -28,6 +28,7 @@ class CabinMonitorService : Service() {
         Log.d(TAG, "CabinMonitorService created")
 
         createNotificationChannel()
+        startInForeground()
 
         signalSource = PleosVehicleSignalSource(applicationContext)
         signalSource.start()
@@ -39,17 +40,7 @@ class CabinMonitorService : Service() {
         }
     }
 
-    @SuppressLint("InlinedApi")
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        ServiceCompat.startForeground(
-            this,
-            NOTIFICATION_ID,
-            buildNotification(),
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
-        )
-        Log.d(TAG, "CabinMonitorService started in foreground")
-        return START_STICKY
-    }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -67,6 +58,17 @@ class CabinMonitorService : Service() {
             NotificationManager.IMPORTANCE_LOW,
         )
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+    }
+
+    @SuppressLint("InlinedApi")
+    private fun startInForeground() {
+        ServiceCompat.startForeground(
+            this,
+            NOTIFICATION_ID,
+            buildNotification(),
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+        )
+        Log.d(TAG, "CabinMonitorService started in foreground")
     }
 
     private fun buildNotification(): Notification =
