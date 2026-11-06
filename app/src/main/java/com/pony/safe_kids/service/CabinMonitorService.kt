@@ -40,7 +40,10 @@ class CabinMonitorService : Service() {
         }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startInForeground()
+        return START_STICKY
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
