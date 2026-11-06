@@ -19,6 +19,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Pleos Connect SDK 저장소. ai.pleos.playground 그룹만 여기서 받는다.
+        maven {
+            url = uri("https://nexus-playground.pleos.ai/repository/maven-releases/")
+            content {
+                includeGroup("ai.pleos.playground")
+            }
+        }
     }
 }
 
