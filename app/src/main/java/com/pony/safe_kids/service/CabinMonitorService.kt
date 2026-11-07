@@ -12,8 +12,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.pony.safe_kids.R
-import com.pony.safe_kids.data.vehicle.PleosVehicleSignalSource
-import com.pony.safe_kids.data.vehicle.VehicleSignalSource
+import com.pony.safe_kids.SafeKidsApplication
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -29,9 +28,9 @@ class CabinMonitorService : Service() {
         createNotificationChannel()
         startInForeground()
 
-        val signalSource: VehicleSignalSource = PleosVehicleSignalSource(applicationContext)
+        val cabinSignal = (application as SafeKidsApplication).container.cabinSignal
         scope.launch {
-            signalSource.cabinSignal.collect { signal ->
+            cabinSignal.collect { signal ->
                 Log.d(TAG, "CabinSignal $signal")
             }
         }
