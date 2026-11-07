@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 class CabinMonitorService : Service() {
 
     private val scope = MainScope()
-    private lateinit var signalSource: VehicleSignalSource
 
     override fun onCreate() {
         super.onCreate()
@@ -30,9 +29,7 @@ class CabinMonitorService : Service() {
         createNotificationChannel()
         startInForeground()
 
-        signalSource = PleosVehicleSignalSource(applicationContext)
-        signalSource.start()
-
+        val signalSource: VehicleSignalSource = PleosVehicleSignalSource(applicationContext)
         scope.launch {
             signalSource.cabinSignal.collect { signal ->
                 Log.d(TAG, "CabinSignal $signal")
@@ -50,7 +47,6 @@ class CabinMonitorService : Service() {
     override fun onDestroy() {
         Log.d(TAG, "CabinMonitorService destroyed")
         scope.cancel()
-        signalSource.stop()
         super.onDestroy()
     }
 
