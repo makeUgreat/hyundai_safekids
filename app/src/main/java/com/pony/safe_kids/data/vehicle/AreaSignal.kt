@@ -25,19 +25,23 @@ internal sealed interface AreaEvent<out L> {
     data class Supported<L>(val locations: Set<L>) : AreaEvent<L>
     data class Updated<L>(val location: L, val reading: Reading) : AreaEvent<L>
     data class Read<L>(val location: L, val reading: Reading) : AreaEvent<L>
+    data object CapabilityFailed : AreaEvent<Nothing>
 }
 
 internal data class AreaState<L>(
     val locations: Set<L>? = null,
     val readings: Map<L, Reading> = emptyMap(),
+    val capabilityFailed: Boolean = false,
 ) {
     fun apply(event: AreaEvent<L>): AreaState<L> = when (event) {
         is AreaEvent.Supported -> copy(locations = event.locations)
         is AreaEvent.Updated -> copy(readings = readings + (event.location to event.reading))
         is AreaEvent.Read -> if (event.location in readings) this else copy(readings = readings + (event.location to event.reading))
+        AreaEvent.CapabilityFailed -> copy(capabilityFailed = true)
     }
 
     fun snapshot(): LocationSnapshot<L> {
+        if (capabilityFailed) return LocationSnapshot.Failed
         val locations = locations ?: return LocationSnapshot.Pending
         val values = mutableMapOf<L, Boolean>()
         val unknown = mutableSetOf<L>()
@@ -91,7 +95,10 @@ internal fun <A, L> areaSignalFlow(
                 }
             }
         }
-        .onFailure { e -> onError("${source.name} capability failed", e) }
+        .onFailure { e ->
+            onError("${source.name} capability failed", e)
+            trySend(AreaEvent.CapabilityFailed)
+        }
 
     awaitClose { unsubscribes.forEach { it() } }
 }

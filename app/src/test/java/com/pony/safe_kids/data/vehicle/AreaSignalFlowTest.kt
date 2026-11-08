@@ -127,7 +127,7 @@ class AreaSignalFlowTest {
     }
 
     @Test
-    fun `reports capability failure and stays pending`() = runBlocking {
+    fun `reports capability failure and emits failed`() = runBlocking {
         val source = FakeAreaSource()
         val results = mutableListOf<LocationSnapshot<String>>()
         val job = collect(source, results)
@@ -136,7 +136,7 @@ class AreaSignalFlowTest {
         job.cancelAndJoin()
 
         assertEquals(listOf("Fake capability failed"), source.errors)
-        assertEquals(listOf(LocationSnapshot.Pending), results)
+        assertEquals(listOf(LocationSnapshot.Pending, LocationSnapshot.Failed), results)
     }
 
     private companion object {

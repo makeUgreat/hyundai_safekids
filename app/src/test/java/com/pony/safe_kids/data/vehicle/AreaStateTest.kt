@@ -100,6 +100,22 @@ class AreaStateTest {
     }
 
     @Test
+    fun `is failed when the capability check failed`() {
+        assertEquals(LocationSnapshot.Failed, stateOf(AreaEvent.CapabilityFailed).snapshot())
+    }
+
+    @Test
+    fun `failure wins over readings that already arrived`() {
+        val state = stateOf(
+            AreaEvent.Supported(setOf("a")),
+            AreaEvent.Updated("a", on),
+            AreaEvent.CapabilityFailed,
+        )
+
+        assertEquals(LocationSnapshot.Failed, state.snapshot())
+    }
+
+    @Test
     fun `ignores readings of unsupported locations`() {
         val state = stateOf(
             AreaEvent.Supported(setOf("a")),
